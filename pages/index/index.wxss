@@ -1,4 +1,30 @@
 /**index.wxss**/
+.body-view {
+	font-family: 'Charis SIL', 'Doulos SIL', Gentium, GentiumAlt, 'DejaVu Sans', Code2000, 'TITUS Cyberbit Basic', 'Arial Unicode MS', 'Lucida Sans Unicode', 'Chrysanthi Unicode';
+	font-size: .75em;
+	color: #666;
+}
+.word-info {
+	position: absolute;
+	top:0;
+	left:0;
+	z-index:999;
+	width:100%;
+}
+.word-info-content {
+	padding:13px;
+	background:#fff;
+	filter: alpha(opacity=50);
+	opacity: .50;
+}
+audio {
+	position: absolute;
+	top:0px;
+	right:-240px;
+	filter: alpha(opacity=75);
+	opacity: .75;	
+}
+
 .userinfo {
   display: flex;
   flex-direction: column;

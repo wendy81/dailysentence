@@ -30,7 +30,6 @@ function imagesWh(e){
         }
       }
     })
-    console.log(results);
     return results;
 }
 
