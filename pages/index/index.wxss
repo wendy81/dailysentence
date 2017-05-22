@@ -2,7 +2,7 @@
 .body-view {
 	font-family: 'Charis SIL', 'Doulos SIL', Gentium, GentiumAlt, 'DejaVu Sans', Code2000, 'TITUS Cyberbit Basic', 'Arial Unicode MS', 'Lucida Sans Unicode', 'Chrysanthi Unicode';
 	font-size: .75em;
-	color: #666;
+	color: #000;
 }
 .word-info {
 	position: absolute;
