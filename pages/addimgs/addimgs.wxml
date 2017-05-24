@@ -1,0 +1,21 @@
+<!--addimgs.wxml-->
+<view class="body-view">
+<form bindsubmit="formSubmit" bindreset="formReset">
+	<view class="section">
+	  <view class="section__title">Image Word:</view>
+	  <input focus type="text" name="word" placeholder="Please input the word" />
+	</view>
+	<view class="section">
+	  <view class="section__title">Image Url:</view>
+	  <input name="url" type="text" placeholder="Please input the Image Url" />
+	</view>	
+
+	<view class="btn-area">
+	<button formType="submit">Submit</button>
+	<button formType="reset">Reset</button>
+	</view>
+</form>
+</view>
+
+
+

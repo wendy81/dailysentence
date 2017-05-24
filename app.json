@@ -1,14 +1,27 @@
 {
-  "pages":[
-    "pages/index/index"
-  ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#eee",
-    "navigationBarTitleText": "ABC",
-    "navigationBarTextStyle":"black",
-    "backgroundColor":"#fff",
-    "enablePullDownRefresh":true
-  },
-  "debug": true
+    "pages": [
+        "pages/index/index",
+        "pages/addimgs/addimgs"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#eee",
+        "navigationBarTitleText": "ABC",
+        "navigationBarTextStyle": "black",
+        "backgroundColor": "#fff",
+        "enablePullDownRefresh": true
+    },
+    "tabBar": {
+        "color": "#a9b7b7",
+        "selectedColor": "#11cd6e",
+        "borderStyle": "black",
+        "list": [{
+            "pagePath": "pages/index/index",
+            "text": "首页"
+        },{
+            "pagePath": "pages/addimgs/addimgs",
+            "text": "添加图片"
+        }]
+    },
+    "debug": true
 }
