@@ -8,17 +8,6 @@
   padding: 200rpx 0;
   box-sizing: border-box;
 } 
-
-input {
-	border:#eee 1px solid;
-	widht:100%;
-	margin:10px;
-	height:30px;
-	line-height:30px;
-	padding-left:10px;
-	padding-right:10px;
-}
-
 .section__title {
 	widht: 100%;
 	margin: 10px;

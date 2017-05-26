@@ -5,10 +5,13 @@
 	  <view class="section__title">Image Word:</view>
 	  <input focus type="text" name="word" placeholder="Please input the word" />
 	</view>
-	<view class="section">
-	  <view class="section__title">Image Url:</view>
-	  <input name="url" type="text" placeholder="Please input the Image Url" />
-	</view>	
+	<block wx:for="{{imageUrl}}" wx:key="{{index}}">
+	  <input class="hidden" type="text" name="url" value="{{item}}" />
+	  <image src="{{item}}" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
+	</block>
+
+	<button type="primary" size="{{primarySize}}" loading="{{loading}}" plain="{{plain}}"
+    disabled="{{disabled}}" bindtap="chooseImg"> 选择图片 </button>
 
 	<view class="btn-area">
 	<button formType="submit">Submit</button>
