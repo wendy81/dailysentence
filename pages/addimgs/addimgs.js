@@ -1,40 +1,40 @@
 //index.js
 //获取应用实例
 var app = getApp();
-
 Page({
     data: {
         imageInfo: null,
-        imageUrl: null,
+        imageURL: null,
     },
     onLoad: function(e) {
-        wx.request({
-            url: 'https://www.abc.com/token',
-            method: 'GET',
-            success: (res) => {
-                let  data = res.data;
-                this.token = data; //默认返回一个token，赋值给已经有的token属性。这里只是示例，具体根据需求可自行设定。
-                try {
-                    wx.setStorageSync('token', this.token)
-                } catch (e) {}
-            },
-            fail: (res) => {
-                console.log(res)
-            }
-        })
+
     },
     formSubmit: function(e) {
-        //建立连接
-        wx.connectSocket({
-                url: "ws://www.abc.com:8001",
-            })
-            //连接成功
-        wx.onSocketOpen(function() {
-            console.log(e.detail.value);
-            var value = JSON.stringify(e.detail.value);
-            wx.sendSocketMessage({
-                data: value
-            })
+        let value = e.detail.value;
+        wx.request({
+            url: 'https://www.abc.com/upload',
+            method: 'POST',
+            data: {
+                key: e.detail.value.word
+            },
+            header: {
+                'content-type': 'application/x-www-form-urlencoded'
+            },
+            success: (res) => {
+                let data = res.data;
+                wx.showToast({
+                    title: '成功',
+                    icon: 'success',
+                    duration: 2000
+                })
+            },
+            fail: (res) => {
+                wx.showToast({
+                    title: '失败',
+                    icon: 'fail',
+                    duration: 2000
+                })
+            }
         })
     },
     getImagesInfo: function() {
@@ -59,28 +59,6 @@ Page({
                 this.setData({
                     imageUrl: tempFilePaths
                 });
-
-                wx.uploadFile({
-                    url: 'https://www.abc.com/upload?=' + wx.getStorageSync('token'), //仅为示例，非真实的接口地址
-                    filePath: tempFilePaths[0],
-                    name: 'file',
-                    // formData: {
-                    //     'token': wx.getStorageSync('token')
-                    // },
-                    header: {
-                        "Content-Type": "multipart/form-data"
-                    },
-                    success: function(resUpload) {
-                        console.log(resUpload.data);
-                        var data = resUpload.data
-                        res.data=JSON.parse(resUpload.data); 
-                            //do something
-                    },
-                    complete: function(resUpload) {
-                        console.log(resUpload);
-                    }
-                })
-
                 /*
                  * @Function wx.getSystemInfo 得到系统信息
                  * @params windowWidth可使用窗口宽度  windowHeight可使用窗口高度
@@ -98,19 +76,15 @@ Page({
                             src: res.tempFilePaths[0],
                             success: (res) => {
                                 this.setData({
-                                    imageWidth: (windowWidth - 30),
-                                    imageheight: (windowWidth - 30)
+                                    imageWidth: (windowWidth - 200),
+                                    imageheight: (windowWidth - 200)
                                 })
                             }
                         });
                     }
                 });
-
             }
-
         })
     }
-
-// {"access_token":"d8OiJHfGgRtijsPIC9H1jZS3-cFC_hj7CpRENJXdVGXH7_76aQm5bfnoV8VU4OAVe9a_vVuE5cR8uoFuiw6GY7wD-Gtfx8pehZx3vGhGJC5-TNXTAJzsdu39Yqw0i34VJNEgAHAQUL","expires_in":7200}  
 
 })

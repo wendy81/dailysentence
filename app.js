@@ -1,6 +1,8 @@
 //app.js
 const Event = require('./utils/event.js').Event;
 
+// LeanCloud 应用的 ID 和 Key
+
 App({
     event: new Event(),
     onLaunch: function(params) {

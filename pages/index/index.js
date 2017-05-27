@@ -1,10 +1,7 @@
 //index.js
 //获取应用实例
-var app = getApp();
-
 var imagesWh = require('../..//utils/imagesWh.js');
 var getWordInfo = require('../..//utils/word.js');
-var getData = require('../..//utils/getData.js'); 
 
 Page({
     data: {
@@ -17,20 +14,12 @@ Page({
         duration: 1000,
         imageWidth: null,
         imageheight: null,
-        currentWord: 'ally',
+        currentWord: null,
     },
-    onUnload: function() {
-        // remove all
-        app.event.off()
-        //     // remove all callbacks
-        // app.event.off('afterPaySuccess')
-        //     // remove specific callbacks
-        // app.event.off('afterPaySuccess', this.afterPaySuccess)
-    },
+    onUnload: function() {},
     onLaunch: function() {
         wx.login({
             success: function(res) {
-                console.log(res);
                 if (res.code) {
                     //发起网络请求
                     wx.request({
@@ -46,22 +35,57 @@ Page({
         });
     },
     onLoad: function(e) {
-        // if(getImagesInfo) {
-        //   app.event.emit('getImagesInfo');
-        //   var getImagesInfo = app.event._stores.getImagesInfo;
-        //   var imageInfo = getImagesInfo[0].ctx.data.imageInfo;
-        //   // try {
-        //   //   wx.setStorageSync(imageInfo.word, imageInfo)
-        //   // } catch (e) {  
-        //   //   console.log(e);  
-        //   // }
-        //   this.setData({images: imagesArry, currentWord: imageInfo.word})
-        // }
-      getData.getData(this);
-        /*
-         * 初始化 单词数据  默认为this.data.currentWord ＝ 'ally'
-         */
-        getWordInfo.getWordInfo(this,this.data.currentWord);
+        wx.connectSocket({
+            url: 'ws://www.abc.com:8001',
+            header: {
+                'content-type': 'application/json'
+            },
+            method: "GET"
+        })
+
+        //连接成功
+        wx.onSocketOpen(function() {
+            wx.sendSocketMessage({
+                data: 'connect successfully!',
+            })
+        })
+
+        wx.onSocketError(function(res) {
+            console.log('WebSocket连接打开失败，请检查！')
+        })
+
+        wx.onSocketMessage((res) => {
+                let data = JSON.parse(res.data);
+                this.setData({
+                    images: data,
+                    currentWord: data[0].key
+                })
+                getWordInfo.getWordInfo(this, this.data.currentWord);
+            })
+            /*
+             * 初始化 单词数据  默认为this.data.currentWord ＝ 'ally'
+             */
+
+    },
+    recordEvent: function(e) {
+        wx.startRecord({
+            success: function(res) {
+                var tempFilePath = res.tempFilePath;
+                wx.playVoice({
+                    filePath: tempFilePath,
+                    complete: function() {
+
+                    }
+                })
+            },
+            fail: function(res) {
+                //录音失败
+            }
+        })
+        setTimeout(function() {
+            //结束录音  
+            wx.stopRecord()
+        }, 10000)
     },
     imagebindload: function(e) {
         this.setData(imagesWh.imagesWh(e));
@@ -83,7 +107,7 @@ Page({
              * e.detail.current 表示当前下标值,当前是第几张图,显示对应的单词信息
              */
             if (i === e.detail.current) {
-                getWordInfo.getWordInfo(this, v.word);
+                getWordInfo.getWordInfo(this, v.key);
             }
         })
     },
