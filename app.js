@@ -33,6 +33,10 @@ App({
     globalData: {
         userInfo: null,
         windowWidth: null,
-        windowHeight: null
+        windowHeight: null,
+        imagesArray: null ,
+        imgCurrentIndex: 0,
+        word: null
+        // indexTitle: null,
     }
 })

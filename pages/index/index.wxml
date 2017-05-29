@@ -2,13 +2,12 @@
 
 
 <view class="body-view">
-
-	<view class="word-info">
+	<view class="word-info" bindtap="audioPlayorPause">
 		<view class="flex-wrp" style="flex-direction:row;" >
 			<!--<view class="flex-item">{{word.word}}</view>-->
 			<!--<view class="flex-item">[{{word.amep}}]</view>-->
 			<view class="flex-item">
-			<audio poster="{{poster}}" name="{{name}}" author="{{author}}" src="{{word.ames}}" id="myAudio"  controls="false" loop  bindtap="audioPlayorPause"></audio>
+			<audio poster="{{poster}}" name="{{name}}" author="{{author}}" src="{{word.ames}}" id="myAudio"  controls="false" loop></audio>
 			</view>
 		</view>
 
@@ -16,7 +15,7 @@
 			<view class="flex-item">{{word.pos1}}{{word.mn1}}</view>
 			<view class="flex-item">{{word.pos2}}{{word.mn2}}</view>
 		</view>
-		<button bindtap="recordEvent">录音</button>
+		<!--<button bindtap="recordEvent">录音</button>-->
 		
 	</view>
 

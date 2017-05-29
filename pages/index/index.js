@@ -2,9 +2,12 @@
 //获取应用实例
 var imagesWh = require('../..//utils/imagesWh.js');
 var getWordInfo = require('../..//utils/word.js');
+var getData = require('../..//utils/getData.js');
+var app = getApp();
 
 Page({
     data: {
+        title: null,
         images: null,
         word: null,
         indicatorDots: false,
@@ -14,7 +17,7 @@ Page({
         duration: 1000,
         imageWidth: null,
         imageheight: null,
-        currentWord: null,
+        imgCurrentIndex: app.globalData.imgCurrentIndex
     },
     onUnload: function() {},
     onLaunch: function() {
@@ -56,16 +59,45 @@ Page({
 
         wx.onSocketMessage((res) => {
                 let data = JSON.parse(res.data);
+                app.globalData.imagesArray = data;
                 this.setData({
-                    images: data,
-                    currentWord: data[0].key
+                    images: data
                 })
-                getWordInfo.getWordInfo(this, this.data.currentWord);
+                let images = this.data.images;
+                images.map((v, i) => {
+                    if( this.data.imgCurrentIndex ===i ) {
+                        getWordInfo.getWordInfo(this, v.key, app.globalData.imagesArray);
+                    }
+                })
             })
-            /*
-             * 初始化 单词数据  默认为this.data.currentWord ＝ 'ally'
-             */
+        /*
+         * 初始化 单词数据  默认为this.data.currentWord ＝ 'ally'
+         *  手机浏览  现在websocket没有配置 手机端不能访问
+         */
 
+        // wx.request({
+        //     url: 'https://www.abc.com/imagesArry', //仅为示例，并非真实的接口地址
+        //     method: 'GET',
+        //     header: {
+        //         'content-type': 'application/json'
+        //     },
+        //     success: (res) => {
+        //         console.log(res)
+        //         // let data = JSON.parse(res.data);
+        //         // this.setData({
+        //         //     images: data,
+        //         //     currentWord: data[0].key
+        //         // })
+        //         // getWordInfo.getWordInfo(this, this.data.currentWord);
+
+        //     }
+        // })
+
+    },
+    onShow: function(e) {
+        this.setData({
+            imgCurrentIndex: app.globalData.imgCurrentIndex
+        })
     },
     recordEvent: function(e) {
         wx.startRecord({
@@ -107,7 +139,7 @@ Page({
              * e.detail.current 表示当前下标值,当前是第几张图,显示对应的单词信息
              */
             if (i === e.detail.current) {
-                getWordInfo.getWordInfo(this, v.key);
+                getWordInfo.getWordInfo(this, v.key, app.globalData.imagesArray);
             }
         })
     },

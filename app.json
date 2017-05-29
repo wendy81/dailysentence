@@ -1,7 +1,8 @@
 {
     "pages": [
         "pages/addimgs/addimgs",
-        "pages/index/index"
+        "pages/index/index",
+        "pages/query/query"
     ],
     "window": {
         "backgroundTextStyle": "light",
@@ -22,6 +23,9 @@
         },{
             "pagePath": "pages/index/index",
             "text": "首页"
+        },{
+            "pagePath": "pages/query/query",
+            "text": "查询"
         }]
     },
     "debug": true

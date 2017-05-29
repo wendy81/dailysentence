@@ -1,0 +1,19 @@
+<!--addimgs.wxml-->
+<view class="body-view">
+	<form>
+		<view class="section">
+		  <input focus type="text" name="word" placeholder="Please query the word" bindinput="inputEvent"/>
+		</view>
+	</form>
+	<view wx:for="{{queryList}}" wx:key="{{index}}">
+		<view class="text-item" data-item="{{item}}" bindtap="swichTabAndChangeIndex">
+			<view class="flex-wrp" style="flex-direction:row;">
+				<view class="flex-item bc_green">{{item}}</view>
+				<!--<view class="flex-item bc_red">{{item.word.pos1}}{{item.word.mn1}}{{item.word.pos2}}{{item.word.mn2}}</view>-->
+			</view>
+		</view>
+	</view>
+</view>
+
+
+
