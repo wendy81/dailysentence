@@ -1,4 +1,4 @@
-function getWordInfo(params, currentTargetWord, globalImagesArray) {
+function getWordInfo(params, currentTargetWord, currentTargetUrl) {
     wx.request({
         url: 'https://xtk.azurewebsites.net/BingService.aspx',
         method: 'POST',
@@ -40,14 +40,47 @@ function getWordInfo(params, currentTargetWord, globalImagesArray) {
                 "pos3": pos3,
                 "word": res.data.word
             };
-            globalImagesArray.map((v, i) => {
-                if (v.key === res.data.word) {
-                    v.currentword = wordObj;
-                }
-            })
             params.setData({
                 word: wordObj
             });
+
+            console.log(currentTargetUrl);
+
+
+            wx.request({
+                url: 'http://127.0.0.1:8080/upload',
+                method: 'POST',
+                /*
+                 * JSON.stringify(wordObj)
+                 */
+                data: {
+                    key: currentTargetWord,
+                    translator: JSON.stringify(wordObj),
+                    imagesData: currentTargetUrl
+                },
+                header: {
+                    // 'content-type': 'multipart/form-data' 
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                success: (res) => {
+                    console.log(res)
+                    let data = res.data;
+                    wx.showToast({
+                        title: '成功',
+                        icon: 'success',
+                        duration: 2000
+                    })
+                },
+                fail: (res) => {
+                    console.log(res)
+                    wx.showToast({
+                        title: '失败',
+                        icon: 'fail',
+                        duration: 2000
+                    })
+                }
+            })
+
         }
     });
 }

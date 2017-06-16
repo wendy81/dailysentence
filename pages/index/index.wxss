@@ -4,23 +4,35 @@
 	font-size: .75em;
 	color: #000;
 }
+.audioBtn {
+	display:block;
+	position: absolute;
+	top:14px;
+	right:14px;
+	z-index:999;
+	filter: alpha(opacity=75);
+	opacity: .75;	
+}
 .word-info {
 	position: absolute;
 	top:0;
 	left:0;
-	z-index:999;
+	z-index:100;
 	width:100%;
 }
 .word-info-content {
 	padding:13px;
 	background:#fff;
-	filter: alpha(opacity=50);
-	opacity: .50;
+	filter: alpha(opacity=70);
+	opacity: .70;
+}
+.word {
+	padding-right:80px;
 }
 audio {
 	position: absolute;
-	top:0px;
-	right:-240px;
+	top:-100px;
+	right:0;
 	filter: alpha(opacity=75);
 	opacity: .75;	
 }
@@ -44,4 +56,10 @@ audio {
 
 .usermotto {
   margin-top: 200px;
+}
+
+.btn-rember-not {
+	position: absolute;
+	top: 80px;
+	right: 0;
 }

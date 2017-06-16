@@ -1,19 +1,23 @@
-<!--addimgs.wxml-->
-<view class="body-view">
+<!--query.wxml-->
+<import src="/pages/top/top.wxml"/>
+
+<view class="body-view" style="height:{{winHeight-60}}px; overflow:scroll;">
 	<form>
 		<view class="section">
-		  <input focus type="text" name="word" placeholder="Please query the word" bindinput="inputEvent"/>
+		  <input focus="true" type="text" name="word" placeholder="Please query the word" bindfocus="inputEvent" bindinput="inputEvent"/>
 		</view>
+		{{prompt}}
 	</form>
-	<view wx:for="{{queryList}}" wx:key="{{index}}">
-		<view class="text-item" data-item="{{item}}" bindtap="swichTabAndChangeIndex">
+	<view wx:for="{{words}}" wx:key="id" id="{{item._id}}">
+		<view class="text-item" data-item="{{item.key}}" bindtap="swichTabAndChangeIndex" bindtap="clickDetail">
 			<view class="flex-wrp" style="flex-direction:row;">
-				<view class="flex-item bc_green">{{item}}</view>
-				<!--<view class="flex-item bc_red">{{item.word.pos1}}{{item.word.mn1}}{{item.word.pos2}}{{item.word.mn2}}</view>-->
+				<view class="flex-item push-left">{{item.key}} [{{item.translator.AmE}}]</view>
+				<view class="flex-item bc_red">{{item.translator.posn}}{{item.translator.defn}}</view>
+				<view class="flex-item bc_red">{{item.translator.posv}}{{item.translator.defv}}</view>
 			</view>
 		</view>
 	</view>
 </view>
-
-
-
+<view style="width:100%;position:absolute;top:{{winHeight-46}}px;">
+	<template is="top" data="{{...topTemplate}}"/>
+</view>

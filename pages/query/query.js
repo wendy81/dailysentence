@@ -1,85 +1,100 @@
-//index.js
-//获取应用实例
-var app = getApp();
-var getWordInfo = require('../..//utils/word.js');
+//query.js
+//查询数据信息
+const app = getApp();
+// const socketData = require('../../utils/socketData.js');
+const topEvent = require('../../utils/top.js');
 
 Page({
     data: {
         inputValue: null,
-        queryList: null,
-        imagesArray: null,
-        word: null
+        words: null,
+        prompt: '',
+        topTemplate: {
+            topSearchActive: 'top-active',
+            homeEvent: ''
+        },
+        winHeight: null
     },
-    onLoad: function(e) {
+    onLoad: function(option) {
+        let winHeight = option.winHeight;
         this.setData({
-            imagesArray: app.globalData.imagesArray
+            winHeight: winHeight
         })
-        // let globalImagesArry = this.data.imagesArray;
-        // let keyArry = [];
-        // globalImagesArry.map((v, i) => {
-        //     if (i < 9) {
-        //         var obj = {};
-        //         getWordInfo.getWordInfo(this, v.key);
-        //         // // if (this.data.word !== null) {
-        //         //     obj.key = v.key;
-        //         //     obj.word = this.data.word;
-        //         //     keyArry.push(obj);
-        //         // // }
-        //         console.log(this.data.word)
-
-        //     }
-        // })
-        // console.log(keyArry);
-    },
-    onShow: function(e) {
-        console.log(app.globalData.imagesArray);
+            /*
+             * @Function socketData  获得数据this.data.images的数组信息
+             */
+            // socketData.socketData(this);
     },
     inputEvent: function(e) {
-        const imagesArray = this.data.imagesArray;
-        const inputValue = e.detail.value;
-        if (imagesArray !== null) {
-            let filterKey = [];
-            let newQueryList = imagesArray.filter((v) => {
-                let key = v.key;
-                var keyInclude = key.includes(inputValue);
-                if (inputValue === '') {
-                    keyInclude = false;
-                }
-                return keyInclude;
-            });
-            newQueryList.map((v, i) => {
-                if (i < 10) {
-                    filterKey.push(v.key);
-                }
-            })
-            this.setData({
-                queryList: filterKey
-            })
-            console.log(this.data.queryList)
-        } else {
-            this.setData({
-                queryList: ['没有对应的数据显示']
-            })
-        }
-    },
-    swichTabAndChangeIndex: function(e) {
-        const currentText = e.currentTarget.dataset.item;
-        let queryListKey = [];
-        for (let value of this.data.imagesArray) {
-            queryListKey.push(value.key)
-        }
-        queryListKey.map((v, i) => {
-            if (v === currentText) {
-                wx.switchTab({
-                    url: '/pages/index/index',
-                    success: function(res) {
-                        console.log(app);
+        const inputValue = (e.detail.value).toLowerCase();
+        // --------- 发送凭证 ------------------
+        wx.request({
+            // url: 'https://learnabc.cloudno.de/search',
+            url: 'http://127.0.0.1:8080/search',
+            data: {
+                code: inputValue
+            },
+            method: 'POST',
+            header: {
+                'content-type': 'application/json'
+            },
+            success: (res) => {
+                let data = res.data;
+                if (data !== 'No Data') {
+                    if (data[0]._id) {
+                        wx.hideNavigationBarLoading()
+                        this.setData({
+                            words: data,
+                            prompt: ''
+                        })
+                    } else {
+                        wx.showNavigationBarLoading()
                     }
-                })
-                app.globalData = {
-                    imgCurrentIndex: i
+                } else {
+                    this.setData({
+                        words: '',
+                        prompt: data
+                    })
                 }
             }
         })
-    }
+        // ------------------------------------
+    },
+    swichTabAndChangeIndex: function(e) {
+        // const currentText = e.currentTarget.dataset.item;
+        // let queryListKey = [];
+        // for (let value of this.data.images) {
+        //     queryListKey.push(value.key)
+        // }
+        // queryListKey.map((v, i) => {
+        //     if (v === currentText) {
+        //         wx.switchTab({
+        //             url: '/pages/index/index',
+        //             success: function(res) {
+        //                 console.log(app);
+        //             }
+        //         })
+        //         app.globalData = {
+        //             imgCurrentIndex: i
+        //         }
+        //     }
+        // })
+    },
+    clickDetail: function(e) {
+        const currentText = e.currentTarget.dataset.item;
+        const wordsArry = this.data.words;
+        const currentWord = [];
+        wordsArry.map((v, i) => {
+            if (v.key === currentText) {
+                currentWord.push(v);
+                let vValue = JSON.stringify(v);
+                app.globalData.currentWord = currentWord;
+                wx.navigateTo({
+                    url: '/pages/index/index'
+                })
+            }
+        })
+    },
+    homeEvent: topEvent.topEvent.homeEvent,
+    searchEvent: topEvent.topEvent.searchEvent
 })

@@ -1,8 +1,10 @@
 {
     "pages": [
-        "pages/addimgs/addimgs",
         "pages/index/index",
-        "pages/query/query"
+        "pages/query/query",
+        "pages/addimgs/addimgs",
+        "pages/personal/personal",
+        "pages/detail/detail"
     ],
     "window": {
         "backgroundTextStyle": "light",
@@ -11,22 +13,6 @@
         "navigationBarTextStyle": "black",
         "backgroundColor": "#fff",
         "enablePullDownRefresh": true
-    },
-    "tabBar": {
-        "color": "#a9b7b7",
-        "position": "top",
-        "selectedColor": "#11cd6e",
-        "borderStyle": "black",
-        "list": [{
-            "pagePath": "pages/addimgs/addimgs",
-            "text": "添加图片"
-        },{
-            "pagePath": "pages/index/index",
-            "text": "首页"
-        },{
-            "pagePath": "pages/query/query",
-            "text": "查询"
-        }]
     },
     "debug": true
 }

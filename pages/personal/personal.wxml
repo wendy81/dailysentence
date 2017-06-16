@@ -1,0 +1,8 @@
+<!--personal.wxml-->
+<view class="body-view">
+	<block wx:if="{{session_id_isvalid}}">
+		<view class="text-item" bindtap="switchTab">添加图片</view>
+	</block>
+	<view class="text-item" bindtap="switchTab">记住</view>
+	<view class="text-item" bindtap="switchTab">没记住</view>
+</view>

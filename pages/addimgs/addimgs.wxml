@@ -16,6 +16,7 @@
 	<view class="btn-area">
 	<button formType="submit">Submit</button>
 	<button formType="reset">Reset</button>
+	<button bindtap="backEvent">Back</button>
 	</view>
 </form>
 </view>

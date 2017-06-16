@@ -27,4 +27,6 @@ $RECYCLE.BIN/
 
 # App specific
 
-pages/images
+images
+data
+OpenSSL

@@ -1,166 +1,210 @@
 //index.js
 //获取应用实例
-var imagesWh = require('../..//utils/imagesWh.js');
-var getWordInfo = require('../..//utils/word.js');
-var getData = require('../..//utils/getData.js');
-var app = getApp();
+const imagesWh = require('../../utils/imagesWh.js');
+const topEvent = require('../../utils/top.js');
+const app = getApp();
 
+function getRequest(dataValue, that) {
+    wx.request({
+        // url: 'https://learnabc.cloudno.de/show',
+        url: 'http://127.0.0.1:8080/show',
+        method: 'POST',
+        header: {
+            'content-type': 'application/json'
+        },
+        data: {
+            'reqNum': dataValue
+        },
+        success: (requestres) => {
+            let dataVal = requestres.data;
+            /*
+             * 如果为[],则强制重新加载,出现[],还不清楚？？？
+             */
+            if (dataVal.length === 0) {
+                wx.reLaunch({
+                    url: '/pages/index/index'
+                })
+            } else if (dataVal[0]._id) {
+                wx.hideNavigationBarLoading()
+                let imgCurrentIndex = that.data.imgCurrentIndex;
+                that.setData({
+                    images: dataVal,
+                    currentAudio: dataVal[imgCurrentIndex].translator.AmEmp3
+                })
+            } else {
+                wx.showNavigationBarLoading()
+            }
+        },
+        fail: (e) => {
+            console.log(e.errMsg)
+        }
+    })
+}
 Page({
     data: {
-        title: null,
         images: null,
-        word: null,
+        loadedImages: [],
         indicatorDots: false,
         autoplay: false,
-        audioPlay: false,
         interval: 5000,
         duration: 1000,
         imageWidth: null,
         imageheight: null,
-        imgCurrentIndex: app.globalData.imgCurrentIndex
+        winHeight: null,
+        imgCurrentIndex: 0,
+        currentAudio: null,
+        allAudioId: [],
+        audioBtnClass: 'fa-play-circle',
+        audioBtnEvent: 'startPlay',
+        topTemplate: {
+            topHomeActive: 'top-active',
+            homeEvent: ''
+        }
     },
-    onUnload: function() {},
-    onLaunch: function() {
-        wx.login({
+    onShareAppMessage: function(res) {
+        console.log(res)
+        if (res.from === 'button') {
+            // 来自页面内转发按钮
+            console.log(res.target)
+        }
+        return {
+            title: '自定义转发标题',
+            path: '/page/user?id=123',
             success: function(res) {
-                if (res.code) {
-                    //发起网络请求
-                    wx.request({
-                        url: 'https://api.weixin.qq.com/sns/jscode2session?appid=wxb027102652cf89b8&secret=e17f5419ac7b9cbf41bc977917c027aa&js_code=JSCODE&grant_type=authorization_code',
-                        data: {
-                            code: res.code
-                        }
-                    })
-                } else {
-                    console.log('获取用户登录态失败！' + res.errMsg)
-                }
-            }
-        });
-    },
-    onLoad: function(e) {
-        wx.connectSocket({
-            url: 'ws://www.abc.com:8001',
-            header: {
-                'content-type': 'application/json'
-            },
-            method: "GET"
-        })
-
-        //连接成功
-        wx.onSocketOpen(function() {
-            wx.sendSocketMessage({
-                data: 'connect successfully!',
-            })
-        })
-
-        wx.onSocketError(function(res) {
-            console.log('WebSocket连接打开失败，请检查！')
-        })
-
-        wx.onSocketMessage((res) => {
-                let data = JSON.parse(res.data);
-                app.globalData.imagesArray = data;
-                this.setData({
-                    images: data
-                })
-                let images = this.data.images;
-                images.map((v, i) => {
-                    if( this.data.imgCurrentIndex ===i ) {
-                        getWordInfo.getWordInfo(this, v.key, app.globalData.imagesArray);
-                    }
-                })
-            })
-        /*
-         * 初始化 单词数据  默认为this.data.currentWord ＝ 'ally'
-         *  手机浏览  现在websocket没有配置 手机端不能访问
-         */
-
-        // wx.request({
-        //     url: 'https://www.abc.com/imagesArry', //仅为示例，并非真实的接口地址
-        //     method: 'GET',
-        //     header: {
-        //         'content-type': 'application/json'
-        //     },
-        //     success: (res) => {
-        //         console.log(res)
-        //         // let data = JSON.parse(res.data);
-        //         // this.setData({
-        //         //     images: data,
-        //         //     currentWord: data[0].key
-        //         // })
-        //         // getWordInfo.getWordInfo(this, this.data.currentWord);
-
-        //     }
-        // })
-
-    },
-    onShow: function(e) {
-        this.setData({
-            imgCurrentIndex: app.globalData.imgCurrentIndex
-        })
-    },
-    recordEvent: function(e) {
-        wx.startRecord({
-            success: function(res) {
-                var tempFilePath = res.tempFilePath;
-                wx.playVoice({
-                    filePath: tempFilePath,
-                    complete: function() {
-
-                    }
-                })
+                console.log('success')
             },
             fail: function(res) {
-                //录音失败
+                console.log('fail')
+            }
+        }
+    },
+    onShow: function(e) {
+        if (app.globalData.requestServer) {
+            let appCurrentWord = app.globalData.currentWord;
+            if (appCurrentWord[0]) {
+                this.setData({
+                        images: appCurrentWord,
+                        currentAudio: appCurrentWord[0].translator.AmEmp3
+                    })
+                    /*
+                     * 从搜索显示过后,再把app变量currentWord还原
+                     */
+                app.globalData.currentWord = '';
+            } else {
+                // --------- 取得数据 ------------------
+                wx.getStorage({
+                        key: 'reqNum',
+                        success: (res) => {
+                            console.log(res.data)
+                            let total = app.globalData.total;
+                            let showNumber = app.globalData.showNumber;
+                            let dataValue = res.data;
+                            let that = this;
+                            let reqNumMax = Math.ceil(total / showNumber);
+                            if (dataValue < reqNumMax) {
+                                dataValue++
+                            } else {
+                                dataValue = 1;
+                            }
+                            getRequest(dataValue, that);
+                            wx.setStorage({
+                                key: "reqNum",
+                                data: dataValue,
+                                success: (setRes) => {
+                                    console.log(setRes)
+                                }
+                            })
+                        },
+                        fail: (e) => {
+                            let dataValue = 1;
+                            let that = this;
+                            getRequest(dataValue, that);
+                            wx.setStorage({
+                                key: "reqNum",
+                                data: 1,
+                                success: function(setRes) {
+                                    console.log(setRes)
+                                }
+                            })
+                        }
+                    })
+                    // --------- 取得数据 ------------------
+            }
+        }
+        this.setData({
+            topTemplate: {
+                topHomeActive: 'top-active',
+                homeEvent: this.homeEvent
             }
         })
-        setTimeout(function() {
-            //结束录音  
-            wx.stopRecord()
-        }, 10000)
+    },
+    onReady: function(e) {
+        /*
+         * @Function loadCurrenAmes加载当前的e.detail.current的音频文件
+         */
+        this.audioCtx = wx.createAudioContext('myAudio');
     },
     imagebindload: function(e) {
-        this.setData(imagesWh.imagesWh(e));
+        /*
+         * 获得数据中第一个图片的宽,高  赋值给 {imageWidth: ,imageheight}
+         */
+        let imagesData = this.data.images;
+        let imagesZero = (this.data.images)[0];
+        if (imagesZero) {
+            this.setData(imagesWh.imagesWh(e));
+        }
     },
     imageError: function(e) {
         console.log(e.detail);
     },
     swiperChange: function(e) {
-        var imagesData = this.data.images;
+
         /*
          * 切换swiper之后 硬性规定audioPlay为false,即不播放
+         * @Function loadCurrenAmes加载当前的e.detail.current的音频文件
          */
+        let data = this.data.images;
         this.setData({
-            audioPlay: false
+            audioBtnClass: 'fa-play-circle',
+            audioBtnEvent: 'startPlay',
+            currentAudio: data[e.detail.current].translator.AmEmp3
         });
-        imagesData.map((v, i) => {
-            /*
-             * 当前current(表示swiper当前下标)变化时,会触发bindChange函数
-             * e.detail.current 表示当前下标值,当前是第几张图,显示对应的单词信息
-             */
-            if (i === e.detail.current) {
-                getWordInfo.getWordInfo(this, v.key, app.globalData.imagesArray);
-            }
+        this.audioCtx.pause();
+    },
+    startPlay: function(e) {
+        this.audioCtx.play();
+        this.setData({
+            audioBtnClass: 'fa-pause-circle',
+            audioBtnEvent: 'stopPlay'
         })
     },
-    /*
-     * 操作音频效果
-     */
-    onReady: function(e) {
-        // 使用 wx.createAudioContext 获取 audio 上下文 context
-        this.audioCtx = wx.createAudioContext('myAudio');
-    },
-    /*
-     * 点击play和pause切换
-     */
-    audioPlayorPause: function(e) {
-        if (!this.data.audioPlay) {
-            this.audioCtx.play();
-        } else {
-            this.audioCtx.pause();
-        }
+    stopPlay: function(e) {
+        this.audioCtx.pause()
         this.setData({
-            audioPlay: !this.data.audioPlay
-        });
+            audioBtnClass: 'fa-play-circle',
+            audioBtnEvent: 'startPlay'
+        })
+    },
+    audioEndEvent: function(e) {
+        this.setData({
+            audioBtnClass: 'fa-play-circle',
+            audioBtnEvent: 'startPlay'
+        })
+    },
+    homeEvent: topEvent.topEvent.homeEvent,
+    searchEvent: topEvent.topEvent.searchEvent,
+    detailsEvent: function(e) {
+        let currentImgId = e.target.id;
+        let images = this.data.images;
+        images.map((v, i) => {
+            if (v._id === currentImgId) {
+                const translator = [];
+                translator.push(v.translator);
+                app.globalData.currentWordTrans = translator[0];
+                wx.navigateTo({
+                    url: '/pages/detail/detail?word=' + v.key
+                })
+            }
+        })
     }
 })

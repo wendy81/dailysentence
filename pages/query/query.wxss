@@ -10,9 +10,15 @@ input {
 	height: 30px;
 	line-height: 30px;
 }
-.text-item {
-	display: block;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	border-bottom: #eee 1px solid;
+audio {
+	position:relative;
+	left:-20px;
+	top:-20px;
+	
+}
+.box {
+	width:30px;
+	height:30px;
+	overflow:hidden;
+	float:right;
 }

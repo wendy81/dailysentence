@@ -1,34 +1,34 @@
 <!--index.wxml-->
-
+<import src="/pages/top/top.wxml"/>
 
 <view class="body-view">
-	<view class="word-info" bindtap="audioPlayorPause">
-		<view class="flex-wrp" style="flex-direction:row;" >
-			<!--<view class="flex-item">{{word.word}}</view>-->
-			<!--<view class="flex-item">[{{word.amep}}]</view>-->
-			<view class="flex-item">
-			<audio poster="{{poster}}" name="{{name}}" author="{{author}}" src="{{word.ames}}" id="myAudio"  controls="false" loop></audio>
-			</view>
-		</view>
-
-		<view class="word-info-content flex-wrp" style="flex-direction:column;">
-			<view class="flex-item">{{word.pos1}}{{word.mn1}}</view>
-			<view class="flex-item">{{word.pos2}}{{word.mn2}}</view>
-		</view>
-		<!--<button bindtap="recordEvent">录音</button>-->
-		
+	<audio src="{{currentAudio}}" id="myAudio"  controls="false" bindended="audioEndEvent"></audio>
+	<view class="audioBtn" bindtap="{{audioBtnEvent}}">
+		<text bindtap="{{audioBtnEvent}}" class="fa fa-4x {{audioBtnClass}}"></text>
 	</view>
 
-	<swiper indicator-dots="{{indicatorDots}}" height="{{h}}"  bindload="imagebindload"  style="height:{{imageheight}}px"
-	  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" current="{{imgCurrentIndex}}" bindchange="swiperChange">
+	<swiper indicator-dots="{{indicatorDots}}" height="{{h}}"  bindload="imagebindload"  style="height:{{winHeight}}px; overflow:hidden;"
+	  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" current="{{imgCurrentIndex}}" bindchange="swiperChange"  bindtap="detailsEvent">
 	  <block wx:for="{{images}}" wx:key="{{index}}">
 	    <swiper-item>
-	      <image src="{{item.url}}" class="slide-image" data-word="{{item.word}}" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
-	    }
+				<view class="word-info word-info-content flex-wrp" style="flex-direction:column;">
+					<view class="flex-item word">{{item.key}} [{{item.translator.AmE}}]</view>
+					<view class="flex-item word">{{item.translator.posn}}{{item.translator.defn}}</view>
+					<view class="flex-item word">{{item.translator.posv}}{{item.translator.defv}}</view>
+				</view>
+			<image wx:key="id" id="{{item._id}}" src="{{item.imgUrl}}" class="slide-image" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
+			}
 	    </swiper-item>
 	  </block>
 	</swiper>
 
+	<!--<view class="btn-rember-not">
+		<button bindtap="setDisabled">记住</button>
+		<button bindtap="setPlain">没记住</button>		
+	</view>-->
+	<view style="width:100%;position:absolute;top:{{winHeight-50}}px;">
+		<template is="top" data="{{...topTemplate}}"/>
+	</view>
 </view>
 
 
