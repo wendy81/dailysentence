@@ -1,12 +1,11 @@
 {
     "pages": [
-        "pages/index/index",
-        "pages/canlendar/canlendar"
+        "pages/index/index"
     ],
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#eee",
-        "navigationBarTitleText": "看图识单词",
+        "navigationBarTitleText": "每日一句",
         "navigationBarTextStyle": "black",
         "backgroundColor": "#fff",
         "enablePullDownRefresh": true

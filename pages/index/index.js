@@ -1,7 +1,6 @@
 //index.js
 //获取应用实例
 const imagesWh = require('../../utils/imagesWh.js');
-const topEvent = require('../../utils/top.js');
 const app = getApp();
 const config = require('../../config.js');
 const host = config.host;
