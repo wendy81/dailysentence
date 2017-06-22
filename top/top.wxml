@@ -1,0 +1,13 @@
+<!--template_top.wxml-->
+<template name="top">
+<view class="section">
+  <view class="flex-wrp1">
+    <view class="flex-item1 {{topHomeActive}}" data-curReqNum="{{curReqNum}}" bindtap="homeEvent">
+	    <text class="fa fa-home fa-lg">{{curReqNum}}</text>
+    </view>
+    <view class="flex-item1 {{topSearchActive}}" bindtap="searchEvent">
+    	<text class="fa fa-search fa-lg"></text>
+    </view>
+  </view>
+</view>
+</template>

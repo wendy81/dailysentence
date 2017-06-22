@@ -25,8 +25,9 @@ function imagesWh(e){
           results.imageWidth = autoWidth;
           results.imageheight = autoHeight;
         }else{//否则展示原来的数据
-          results.imageWidth = originalWidth;
-          results.imageheight = originalHeight;
+          autoHeight = (windowWidth*originalHeight)/originalWidth;
+          results.imageWidth = windowWidth;
+          results.imageheight = autoHeight;
         }
          results.winHeight = windowHeight;
       }

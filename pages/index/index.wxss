@@ -13,13 +13,6 @@
 	filter: alpha(opacity=75);
 	opacity: .75;	
 }
-.word-info {
-	position: absolute;
-	top:0;
-	left:0;
-	z-index:100;
-	width:100%;
-}
 .word-info-content {
 	padding:13px;
 	background:#fff;
@@ -27,39 +20,24 @@
 	opacity: .70;
 }
 .word {
-	padding-right:80px;
+	font-size:1.3em;
+	line-height:24px;
+	padding-bottom:10px;
+}
+.word-note {
+	font-size:1.2em;
+	line-height:24px;
+}
+.word-date {
+	font-size:1em;
+	color: #666;
+}
+.sound_ico {
+	width:26px;
+	height:22px;
+	margin-bottom:-6px;
 }
 audio {
-	position: absolute;
+	position:absolute;
 	top:-100px;
-	right:0;
-	filter: alpha(opacity=75);
-	opacity: .75;	
-}
-
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 200px;
-}
-
-.btn-rember-not {
-	position: absolute;
-	top: 80px;
-	right: 0;
 }

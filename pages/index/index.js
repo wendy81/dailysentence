@@ -3,47 +3,63 @@
 const imagesWh = require('../../utils/imagesWh.js');
 const topEvent = require('../../utils/top.js');
 const app = getApp();
+const config = require('../../config.js');
+const host = config.host;
 
-function getRequest(dataValue, that) {
+
+const date = new Date()
+const years = []
+const months = []
+const days = []
+const currentMonth = date.getMonth() + 1;
+const currentDay = date.getDate();
+
+for (let i = 1990; i <= date.getFullYear(); i++) {
+    years.push(i)
+}
+
+for (let i = 1; i <= 12; i++) {
+    months.push(num(i))
+}
+
+for (let i = 1; i <= 31; i++) {
+    days.push(num(i))
+}
+
+function num(i) {
+    if (i < 10) {
+        i = '0' + i
+    }
+    return i;
+}
+
+function getDate(date, that) {
     wx.request({
-        // url: 'https://learnabc.cloudno.de/show',
-        url: 'http://127.0.0.1:8080/show',
+        url: host + '/',
         method: 'POST',
-        header: {
-            'content-type': 'application/json'
-        },
         data: {
-            'reqNum': dataValue
+            date: date
+        },
+        header: {
+            'content-type': 'application/x-www-form-urlencoded'
         },
         success: (requestres) => {
             let dataVal = requestres.data;
-            /*
-             * 如果为[],则强制重新加载,出现[],还不清楚？？？
-             */
-            if (dataVal.length === 0) {
-                wx.reLaunch({
-                    url: '/pages/index/index'
-                })
-            } else if (dataVal[0]._id) {
-                wx.hideNavigationBarLoading()
-                let imgCurrentIndex = that.data.imgCurrentIndex;
-                that.setData({
-                    images: dataVal,
-                    currentAudio: dataVal[imgCurrentIndex].translator.AmEmp3
-                })
-            } else {
-                wx.showNavigationBarLoading()
-            }
+            let dataArry = [];
+            dataArry.push(dataVal);
+            that.setData({
+                datas: dataArry
+            })
         },
         fail: (e) => {
             console.log(e.errMsg)
         }
     })
 }
+
 Page({
     data: {
-        images: null,
-        loadedImages: [],
+        datas: null,
         indicatorDots: false,
         autoplay: false,
         interval: 5000,
@@ -52,159 +68,92 @@ Page({
         imageheight: null,
         winHeight: null,
         imgCurrentIndex: 0,
-        currentAudio: null,
-        allAudioId: [],
-        audioBtnClass: 'fa-play-circle',
+        audioBtnClass: '../../images/sound_static.gif',
         audioBtnEvent: 'startPlay',
-        topTemplate: {
-            topHomeActive: 'top-active',
-            homeEvent: ''
-        }
+        //显示日期的数据
+        years: years,
+        year: date.getFullYear(),
+        months: months,
+        month: num(currentMonth),
+        days: days,
+        day: num(currentDay),
+        year: date.getFullYear(),
+        value: [date.getFullYear(), date.getMonth(), date.getDate()-1]
     },
-    onShareAppMessage: function(res) {
-        console.log(res)
-        if (res.from === 'button') {
-            // 来自页面内转发按钮
-            console.log(res.target)
-        }
-        return {
-            title: '自定义转发标题',
-            path: '/page/user?id=123',
-            success: function(res) {
-                console.log('success')
-            },
-            fail: function(res) {
-                console.log('fail')
-            }
-        }
-    },
-    onShow: function(e) {
-        if (app.globalData.requestServer) {
-            let appCurrentWord = app.globalData.currentWord;
-            if (appCurrentWord[0]) {
-                this.setData({
-                        images: appCurrentWord,
-                        currentAudio: appCurrentWord[0].translator.AmEmp3
-                    })
-                    /*
-                     * 从搜索显示过后,再把app变量currentWord还原
-                     */
-                app.globalData.currentWord = '';
-            } else {
-                // --------- 取得数据 ------------------
-                wx.getStorage({
-                        key: 'reqNum',
-                        success: (res) => {
-                            console.log(res.data)
-                            let total = app.globalData.total;
-                            let showNumber = app.globalData.showNumber;
-                            let dataValue = res.data;
-                            let that = this;
-                            let reqNumMax = Math.ceil(total / showNumber);
-                            if (dataValue < reqNumMax) {
-                                dataValue++
-                            } else {
-                                dataValue = 1;
-                            }
-                            getRequest(dataValue, that);
-                            wx.setStorage({
-                                key: "reqNum",
-                                data: dataValue,
-                                success: (setRes) => {
-                                    console.log(setRes)
-                                }
-                            })
-                        },
-                        fail: (e) => {
-                            let dataValue = 1;
-                            let that = this;
-                            getRequest(dataValue, that);
-                            wx.setStorage({
-                                key: "reqNum",
-                                data: 1,
-                                success: function(setRes) {
-                                    console.log(setRes)
-                                }
-                            })
-                        }
-                    })
-                    // --------- 取得数据 ------------------
-            }
-        }
-        this.setData({
-            topTemplate: {
-                topHomeActive: 'top-active',
-                homeEvent: this.homeEvent
-            }
-        })
+    // onShareAppMessage: function(res) {
+    //     console.log(res)
+    //     if (res.from === 'button') {
+    //         // 来自页面内转发按钮
+    //         console.log(res.target)
+    //     }
+    //     return {
+    //         title: '自定义转发标题',
+    //         path: '/page/user?id=123',
+    //         success: function(res) {
+    //             console.log('success')
+    //         },
+    //         fail: function(res) {
+    //             console.log('fail')
+    //         }
+    //     }
+    // },
+    onLoad: function(e) {
+        var that = this;
+        var date = this.data.year + '-' + this.data.month + '-' + this.data.day;
+
+        console.log(this.data.month)
+        getDate(date, that)
     },
     onReady: function(e) {
-        /*
-         * @Function loadCurrenAmes加载当前的e.detail.current的音频文件
-         */
-        this.audioCtx = wx.createAudioContext('myAudio');
+        // 使用 wx.createAudioContext 获取 audio 上下文 context
+        this.audioCtx = wx.createAudioContext('myAudio')
     },
     imagebindload: function(e) {
         /*
          * 获得数据中第一个图片的宽,高  赋值给 {imageWidth: ,imageheight}
          */
-        let imagesData = this.data.images;
-        let imagesZero = (this.data.images)[0];
+        let imagesData = this.data.datas;
+        let imagesZero = imagesData[0];
         if (imagesZero) {
             this.setData(imagesWh.imagesWh(e));
         }
     },
     imageError: function(e) {
-        console.log(e.detail);
-    },
-    swiperChange: function(e) {
-
-        /*
-         * 切换swiper之后 硬性规定audioPlay为false,即不播放
-         * @Function loadCurrenAmes加载当前的e.detail.current的音频文件
-         */
-        let data = this.data.images;
-        this.setData({
-            audioBtnClass: 'fa-play-circle',
-            audioBtnEvent: 'startPlay',
-            currentAudio: data[e.detail.current].translator.AmEmp3
-        });
-        this.audioCtx.pause();
+        console.log(e);
     },
     startPlay: function(e) {
         this.audioCtx.play();
         this.setData({
-            audioBtnClass: 'fa-pause-circle',
+            audioBtnClass: '../../images/sound_dynamic.gif',
             audioBtnEvent: 'stopPlay'
         })
     },
     stopPlay: function(e) {
         this.audioCtx.pause()
         this.setData({
-            audioBtnClass: 'fa-play-circle',
+            audioBtnClass: '../../images/sound_static.gif',
             audioBtnEvent: 'startPlay'
         })
     },
     audioEndEvent: function(e) {
         this.setData({
-            audioBtnClass: 'fa-play-circle',
+            audioBtnClass: '../../images/sound_static.gif',
             audioBtnEvent: 'startPlay'
         })
     },
-    homeEvent: topEvent.topEvent.homeEvent,
-    searchEvent: topEvent.topEvent.searchEvent,
-    detailsEvent: function(e) {
-        let currentImgId = e.target.id;
-        let images = this.data.images;
-        images.map((v, i) => {
-            if (v._id === currentImgId) {
-                const translator = [];
-                translator.push(v.translator);
-                app.globalData.currentWordTrans = translator[0];
-                wx.navigateTo({
-                    url: '/pages/detail/detail?word=' + v.key
-                })
-            }
+    bindChange: function(e) {
+        const val = e.detail.value;
+        console.log(val)
+        this.setData({
+            year: this.data.years[val[0]],
+            month: this.data.months[val[1]],
+            day: this.data.days[val[2]]
         })
+        /*
+         * 日期改变,则重新调用request得到新的数据
+         */
+        const that = this;
+        const date = this.data.year + '-' + this.data.month + '-' + this.data.day;
+        getDate(date, that)
     }
 })

@@ -2,34 +2,39 @@
 <import src="/pages/top/top.wxml"/>
 
 <view class="body-view">
-	<audio src="{{currentAudio}}" id="myAudio"  controls="false" bindended="audioEndEvent"></audio>
-	<view class="audioBtn" bindtap="{{audioBtnEvent}}">
-		<text bindtap="{{audioBtnEvent}}" class="fa fa-4x {{audioBtnClass}}"></text>
-	</view>
 
-	<swiper indicator-dots="{{indicatorDots}}" height="{{h}}"  bindload="imagebindload"  style="height:{{winHeight}}px; overflow:hidden;"
-	  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" current="{{imgCurrentIndex}}" bindchange="swiperChange"  bindtap="detailsEvent">
-	  <block wx:for="{{images}}" wx:key="{{index}}">
-	    <swiper-item>
-				<view class="word-info word-info-content flex-wrp" style="flex-direction:column;">
-					<view class="flex-item word">{{item.key}} [{{item.translator.AmE}}]</view>
-					<view class="flex-item word">{{item.translator.posn}}{{item.translator.defn}}</view>
-					<view class="flex-item word">{{item.translator.posv}}{{item.translator.defv}}</view>
-				</view>
-			<image wx:key="id" id="{{item._id}}" src="{{item.imgUrl}}" class="slide-image" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
-			}
-	    </swiper-item>
-	  </block>
-	</swiper>
+<swiper indicator-dots="{{indicatorDots}}" height="{{winHeight}}" style="height:{{winHeight - 68}}px"
+  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" current="{{imgCurrentIndex}}">
+  <block wx:for="{{datas}}" wx:key="{{index}}">
+    <swiper-item>
+		<image wx:key="id" id="{{item._id}}" src="{{item.picture}}" class="slide-image" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
+		<view class="word-info-content flex-wrp">
+			<view class="flex-item word word-date">{{item.dateline}}</view>
+			<view class="flex-item word">
+			{{item.content}}
+			<image bindtap="{{audioBtnEvent}}" src="{{audioBtnClass}}" class="sound_ico" />
+			</view>
+			<view class="flex-item word-note">{{item.note}}</view>
+		</view>
 
-	<!--<view class="btn-rember-not">
-		<button bindtap="setDisabled">记住</button>
-		<button bindtap="setPlain">没记住</button>		
-	</view>-->
-	<view style="width:100%;position:absolute;top:{{winHeight-50}}px;">
-		<template is="top" data="{{...topTemplate}}"/>
-	</view>
+		<audio src="{{item.tts}}" id="myAudio" controls bindended="audioEndEvent"></audio>
+    </swiper-item>
+  </block>   
+</swiper>
+
+<view>
+  <view>{{year}}年{{month}}月{{day}}日</view>
+  <picker-view indicator-style="height: 50px;" style="width: 100%; height: 50px;" value="{{value}}" bindchange="bindChange">
+    <picker-view-column>
+      <view wx:for="{{years}}" wx:key="{{years}}" style="line-height: 50px">{{item}}年</view>
+    </picker-view-column>
+    <picker-view-column>
+      <view wx:for="{{months}}" wx:key="{{months}}" style="line-height: 50px">{{item}}月</view>
+    </picker-view-column>
+    <picker-view-column>
+      <view wx:for="{{days}}" wx:key="{{days}}" style="line-height: 50px">{{item}}日</view>
+    </picker-view-column>
+  </picker-view>
 </view>
 
-
-
+</view>

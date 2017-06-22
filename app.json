@@ -1,15 +1,12 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/query/query",
-        "pages/addimgs/addimgs",
-        "pages/personal/personal",
-        "pages/detail/detail"
+        "pages/canlendar/canlendar"
     ],
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#eee",
-        "navigationBarTitleText": "ABC",
+        "navigationBarTitleText": "看图识单词",
         "navigationBarTextStyle": "black",
         "backgroundColor": "#fff",
         "enablePullDownRefresh": true

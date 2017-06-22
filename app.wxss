@@ -65,6 +65,18 @@
   border-bottom:rgb(72,193,61) 2px solid;
   color:rgb(72,193,61);
 }
+.show {
+  visibility:visible;
+}
+.hide {
+  visibility:hidden;
+}
+.show1 {
+  display:block;
+}
+.hide1 {
+  display:none;
+}
 
 /* font-awesome  */
 @font-face {
