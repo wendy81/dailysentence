@@ -29,7 +29,8 @@ function imagesWh(e){
           results.imageWidth = windowWidth;
           results.imageheight = autoHeight;
         }
-         results.winHeight = windowHeight;
+        results.winHeight = windowHeight;
+        results.windowWidth = windowWidth;
       }
     })
     return results;

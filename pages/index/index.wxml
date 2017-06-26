@@ -1,20 +1,57 @@
 <!--index.wxml-->
-<import src="/pages/top/top.wxml"/>
 
 <view class="body-view">
 
 <swiper indicator-dots="{{indicatorDots}}" height="{{winHeight}}" style="height:{{winHeight - 68}}px"
   autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" current="{{imgCurrentIndex}}">
-  <block wx:for="{{datas}}" wx:key="{{index}}">
+  <block wx:for="{{datas}}" wx:key="{{item._id}}">
     <swiper-item>
-		<image wx:key="id" id="{{item._id}}" src="{{item.picture}}" class="slide-image" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
+
+    <block wx:if="{{datas !== null}}">
+        <image wx:key="id" id="{{item._id}}" src="{{item.picture}}" class="slide-image pos" data-index="{{index}}" bindload="imagebindload"  binderror="imageError" style="width:{{imageWidth}}px;height:{{imageheight}}px"/>
+    </block>
+    <block wx:else>
+      <image class="gray-img" />
+    </block>
+
+
+
 		<view class="word-info-content flex-wrp">
-			<view class="flex-item word word-date">{{item.dateline}}</view>
-			<view class="flex-item word">
-			{{item.content}}
-			<image bindtap="{{audioBtnEvent}}" src="{{audioBtnClass}}" class="sound_ico" />
+
+			<view class="flex-item word word-date pos">
+        <block wx:if="{{datas !== null}}">
+         {{item.dateline}} {{prompt}}
+        </block>
+        <block wx:else>
+          <view class="gray-pos"></view>
+        </block>
+      </view>
+
+			<view class="flex-item word pos">
+        <block wx:if="{{datas !== null}}">
+         {{item.content}}
+        </block>
+        <block wx:else>
+          <view class="gray-pos"></view>
+        </block>
+
+        <block wx:if="{{datas !== null}}">
+          <image bindtap="{{audioBtnEvent}}" src="{{audioBtnClass}}" class="sound_ico {{audioIconHide}}" />
+        </block>
+        <block wx:else>
+          <view class="gray-pos"></view>
+        </block>
 			</view>
-			<view class="flex-item word-note">{{item.note}}</view>
+
+			<view class="flex-item word-note pos">
+        <block wx:if="{{datas !== null}}">
+         {{item.note}}
+        </block>
+        <block wx:else>
+          <view class="gray-pos"></view>
+        </block>
+      </view>
+
 		</view>
 
 		<audio src="{{item.tts}}" id="myAudio" controls bindended="audioEndEvent"></audio>
@@ -22,19 +59,57 @@
   </block>   
 </swiper>
 
-<view>
-  <view>{{year}}年{{month}}月{{day}}日</view>
-  <picker-view indicator-style="height: 50px;" style="width: 100%; height: 50px;" value="{{value}}" bindchange="bindChange">
-    <picker-view-column>
-      <view wx:for="{{years}}" wx:key="{{years}}" style="line-height: 50px">{{item}}年</view>
-    </picker-view-column>
-    <picker-view-column>
-      <view wx:for="{{months}}" wx:key="{{months}}" style="line-height: 50px">{{item}}月</view>
-    </picker-view-column>
-    <picker-view-column>
-      <view wx:for="{{days}}" wx:key="{{days}}" style="line-height: 50px">{{item}}日</view>
-    </picker-view-column>
-  </picker-view>
+
+<view class="section" style="position:absolute;width:100%;left:{{windowWidth-260}}px;top:{{imageheight-60}}px">
+  <view class="picker picker-border picker-border1 {{leftDateChangeBtnClass}}" catchtap="{{leftDateChangeBtn}}">
+    <text class="fa fa-chevron-left fa-lg"></text>
+  </view>
+  <picker mode="date" value="{{date}}" fields="month" start="2012-04-01" bindchange="bindDateChange">
+    <view class="picker picker-border">
+      <text class="fa fa-calendar fa-lg"></text>
+    </view>   
+  </picker>
+  <view class="picker picker-border picker-border1 {{rightDateChangeBtnClass}}" catchtap="{{rightDateChangeBtn}}">
+    <text class="fa fa-chevron-right fa-lg"></text>
+  </view> 
+  <view class="picker picker-border" catchtap="gameEvent">
+     <text class="fa fa-gamepad fa-lg"></text>
+  </view>
 </view>
+
+<view class="pop-div {{showpop}}" style="width:{{windowWidth-32}}px">
+  
+  <view class="pop-padding">
+  <view class="pop-title">
+    <view class="pull-left">根据记忆,正确排序</view>
+    <view class="{{promptColor}} pull-left">{{compareResult}}</view>
+  </view>
+  <view class="section hor-show-block">
+    <image bindtap="{{audioBtnEvent}}" src="{{audioBtnClass}}" class="sound_ico {{audioIconHide}} sound_ico-margin" />
+    <view wx:for="{{showArray}}" wx:key="{{index}}">
+      <view class="hor-word-show" wx:key="item">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="section random-space">
+    <view  wx:for="{{randomArray}}" wx:key="{{index}}">
+      <view class="hor hor-word" wx:key="item" data-index="{{index}}" data-item="{{item}}" catchtap="randomArrayEvent">{{item}}</view>
+    </view>
+  </view>
+
+  </view>
+
+  <view class="pop-btn clear">
+    <button class="pull-left btn" type="default"
+            catchtap="closePopEvent"> 关闭 </button>
+    <button class="pull-left btn {{subBtnShow}}" type="default"
+            disabled="{{disabled}}" catchtap="submitEvent"> 提交 </button>
+    <button class="pull-left btn {{clearBtnShow}}" type="default"
+        disabled="{{disabled}}" catchtap="clearEvent"> 清空 </button>        
+  </view>
+
+</view>
+
+<view class="mask-div {{showpop}}" catchtap="maskEvent" style="width:{{windowWidth}}px; height:{{winHeight}}px"></view>
 
 </view>

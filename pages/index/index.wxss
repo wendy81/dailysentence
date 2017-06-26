@@ -22,11 +22,9 @@
 .word {
 	font-size:1.3em;
 	line-height:24px;
-	padding-bottom:10px;
 }
 .word-note {
 	font-size:1.2em;
-	line-height:24px;
 }
 .word-date {
 	font-size:1em;
@@ -37,7 +35,136 @@
 	height:22px;
 	margin-bottom:-6px;
 }
+.sound_ico-margin {
+	margin-left:4px;
+	margin-top:4px;
+	float:left;
+}
 audio {
 	position:absolute;
 	top:-100px;
 }
+.picker-border {
+	background:#fff;
+	padding:16px;
+	border-radius:50%;
+	color:#2db22d;
+	filter: alpha(opacity=70);
+	opacity: .70;
+	float:left;
+	margin-left:10px;
+}
+.picker-border1 {
+	padding-left:19px;
+	padding-right:19px;
+	padding-top:16px;
+	padding-bottom:16px;
+}
+.hide {
+	display:none;
+}
+.show {
+	display:inline-block;
+}
+.block {
+	display:block;
+}
+.clear {
+	clear:both;
+}
+.pull-left {
+	float:left;
+}
+.hor {
+	padding:4px 10px;
+	margin:4px;
+	float:left;
+}
+.hor-word {
+	border:#eee 1px solid;
+}
+.hor-word-show {
+	margin:4px;
+	float:left;		
+}
+.hor-show-block {
+	border:#eee 1px solid;
+	border-radius:5px;
+	overflow:auto;
+	min-height:100px;
+}
+.pop-div {
+	position:absolute;
+	top:60px;
+	left:15px;
+	background:#fff;
+	border:#666 1px solid;
+	z-index:101;
+	font-size:1.2em;
+}
+.pop-padding {
+	padding:15px;
+}
+.mask-div {
+	position:absolute;
+	left:0;
+	top:0;
+	background:#000;
+	filter: alpha(opacity=50);
+	opacity: .50;
+	z-index:100;	
+}
+.pop-title {
+	color:#666;
+	height:30px;
+	line-height:30px;
+}
+.pop-btn {
+	margin-top:20px;
+}
+.random-space {
+	overflow:auto;
+}
+.red {
+	color:red;
+}
+.green {
+	color:green;
+}
+.btn {
+	width:50%;
+	background-color:#fff;
+}
+button {
+	-webkit-border-radius:0;
+	border-radius:0;
+	-ms-border-radius:0;
+	color:#666;
+	padding-top:4px;
+	padding-bottom:4px;
+}
+button::after {
+	border:transparent 1px solid;
+}
+.date-btn-arrow-disabled {
+	filter: alpha(opacity=30);
+	opacity: .30;	
+}
+
+/**载入前 灰色占位**/
+.pos {
+	margin-bottom:10px;
+}
+.gray-pos {
+	display:block;
+	background:#ddd;
+	height:24px;
+	line-height:24px;
+	width:100%;
+}
+.gray-img {
+	width:100%;
+	height:200px;
+	background:#ddd;	
+}
+
